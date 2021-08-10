@@ -37,7 +37,7 @@ public class CharacterReader {
 			return '\n';
 		}
 
-		char ch = lines[lineNumber].charAt(column++);
+		char ch = lines[lineNumber].charAt(column);
 		column++;
 		return ch;
 	}
