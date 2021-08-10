@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.digitalmodular.udbconfigreader.lexer.ConfigToken;
+import org.digitalmodular.udbconfigreader.lexer.ConfigTokenizer;
+
 /**
  * @author Zom-B
  */
@@ -30,7 +33,7 @@ public class GameConfigurationIO {
 	}
 
 	private static void parseConfiguration(CharacterReader reader) {
-		List<ConfigurationToken> tokens = ConfigurationTokenizer.tokenize(reader);
+		List<ConfigToken> tokens = ConfigTokenizer.tokenize(reader);
 		tokens.forEach(System.out::println);
 	}
 }

@@ -1,4 +1,4 @@
-package org.digitalmodular.udbconfigreader;
+package org.digitalmodular.udbconfigreader.lexer;
 
 import java.util.regex.Pattern;
 
@@ -10,7 +10,7 @@ import static org.digitalmodular.utilities.ValidatorUtilities.requireStringLengt
  * @author Zom-B
  */
 // Created 2021-08-10
-public class ConfigurationToken {
+public class ConfigToken {
 	private static final Pattern NEWLINE_PATTERN = Pattern.compile("[\r\n]");
 
 	/**
@@ -47,7 +47,7 @@ public class ConfigurationToken {
 	private final TokenType tokenType;
 	private final String    text;
 
-	public ConfigurationToken(String source, int lineNumber, int column, TokenType tokenType, String text) {
+	public ConfigToken(String source, int lineNumber, int column, TokenType tokenType, String text) {
 		this.text = requireStringLengthAtLeast(1, text, "text");
 		this.source = requireNonNull(source, "source");
 		this.lineNumber = requireAtLeast(1, lineNumber, "lineNumber");
