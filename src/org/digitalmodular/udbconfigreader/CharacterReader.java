@@ -5,11 +5,13 @@ import java.util.List;
 import static org.digitalmodular.utilities.ValidatorUtilities.requireNonNull;
 
 /**
+ * Groups runs of characters that perform the same grammatical function into tokens.
+ *
  * @author Zom-B
  */
 // Created 2021-08-09
 public class CharacterReader {
-	private final String   sourceName;
+	private final String   source;
 	private final String[] lines;
 
 	private int lineNumber = 0;
@@ -18,8 +20,8 @@ public class CharacterReader {
 	private int storedLineNumber = 0;
 	private int storedColumn     = 0;
 
-	public CharacterReader(String sourceName, List<String> lines) {
-		this.sourceName = requireNonNull(sourceName, "sourceName");
+	public CharacterReader(String source, List<String> lines) {
+		this.source = requireNonNull(source, "sourceName");
 		requireNonNull(lines, "lines");
 		this.lines = lines.toArray(new String[0]);
 	}
@@ -42,8 +44,8 @@ public class CharacterReader {
 		return ch;
 	}
 
-	public String getSourceName() {
-		return sourceName;
+	public String getSource() {
+		return source;
 	}
 
 	public int getLineNumber() {
