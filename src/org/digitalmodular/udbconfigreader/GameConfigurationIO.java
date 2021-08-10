@@ -29,12 +29,12 @@ public class GameConfigurationIO {
 //	private static final String ERROR_INVALID_ARGS = "Invalid function arguments.";
 //	private static final String ERROR_INCLUDE_UNSUPPORTED = "Include function is not supported in data parsed from stream.";
 
-	public static @Nullable Configuration loadGameConfiguration(Path file) throws IOException {
+	public static @Nullable ConfigStruct loadGameConfiguration(Path file) throws IOException {
 		try {
 			List<String>    lines  = Files.readAllLines(file);
 			CharacterReader reader = new CharacterReader(file.getFileName().toString(), lines);
 
-			Configuration configuration = new Configuration(file.getFileName().toString(), true, 64);
+			ConfigStruct configuration = new ConfigStruct(file.getFileName().toString(), true, 64);
 			parseConfiguration(reader, configuration);
 
 			return configuration;
@@ -44,7 +44,7 @@ public class GameConfigurationIO {
 		}
 	}
 
-	private static void parseConfiguration(CharacterReader reader, Configuration configuration) {
+	private static void parseConfiguration(CharacterReader reader, ConfigStruct configuration) {
 		while (true) {
 			int c = reader.nextChar();
 			if (c < 0)
