@@ -51,8 +51,8 @@ public final class ConfigTokenizer {
 
 			if (tokenType != null) {
 				tokens.add(new ConfigToken(reader.getSource(),
-				                           reader.getLineNumber(),
-				                           reader.getColumn(),
+				                           reader.getStoredLineNumber() + 1,
+				                           reader.getStoredColumn() + 1,
 				                           tokenType,
 				                           sb.toString()));
 				sb.setLength(0);

@@ -15,7 +15,7 @@ public class CharacterReader {
 	private final String[] lines;
 
 	private int lineNumber = 0;
-	private int column     = 0;
+	private int column     = -1;
 
 	private int storedLineNumber = 0;
 	private int storedColumn     = 0;
@@ -33,15 +33,20 @@ public class CharacterReader {
 		if (lineNumber >= lines.length)
 			return -1;
 
-		if (column >= lines[lineNumber].length()) {
+		column++;
+		if (column > lines[lineNumber].length()) {
 			lineNumber++;
 			column = 0;
-			return '\n';
 		}
 
-		char ch = lines[lineNumber].charAt(column);
-		column++;
-		return ch;
+		if (lineNumber >= lines.length)
+			return -1; // End of everything
+		else if (lineNumber == lines.length - 1 && column == lines[lineNumber].length())
+			return -1; // End of last line
+		else if (column == lines[lineNumber].length())
+			return '\n'; // End of any line that's not the last
+		else
+			return lines[lineNumber].charAt(column);
 	}
 
 	public String getSource() {
