@@ -15,10 +15,11 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.BLO
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.FUNCTION_END;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.FUNCTION_START;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.NEWLINE;
-import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.OPERATOR;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.OTHER;
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SKIP;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SLASH;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STRING_DELIMITER;
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SYMBOL;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.WHITESPACE;
 
 /**
@@ -66,10 +67,12 @@ public final class ConfigTokenizer {
 	}
 
 	private static TokenType detectTokenType(int ch) {
-		if (ch == '\n' || ch == '\r')
+		if (ch == '\n')
 			return NEWLINE;
-		else if (ch <= ' ' || ch == 127)
+		else if (ch == ' ' || ch == '\t')
 			return WHITESPACE;
+		else if (ch < ' ' || ch >= 127)
+			return SKIP;
 		else if (ch == '/')
 			return SLASH;
 		else if (ch == '*')
@@ -85,7 +88,7 @@ public final class ConfigTokenizer {
 		else if (ch == '}')
 			return BLOCK_END;
 		else if (ch == ';' || ch == '=' || ch == ',')
-			return OPERATOR;
+			return SYMBOL;
 		else
 			return OTHER;
 	}

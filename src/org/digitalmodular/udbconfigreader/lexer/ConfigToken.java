@@ -11,7 +11,8 @@ import static org.digitalmodular.utilities.ValidatorUtilities.requireStringLengt
  */
 // Created 2021-08-10
 public class ConfigToken {
-	private static final Pattern NEWLINE_PATTERN = Pattern.compile("[\r\n]");
+	private static final Pattern NEWLINE_PATTERN = Pattern.compile("\n");
+	private static final Pattern TAB_PATTERN     = Pattern.compile("\t");
 
 	/**
 	 * @author Zom-B
@@ -27,10 +28,17 @@ public class ConfigToken {
 		FUNCTION_END(false),
 		BLOCK_START(false),
 		BLOCK_END(false),
-		OPERATOR(true),
-		OTHER(true);
+		SYMBOL(true),
+		OTHER(true),
+
+		// Don't include this token; it's redundant or erroneous (e.g. Carriage-return)
+		SKIP;
 
 		private final boolean mayCombine;
+
+		TokenType() {
+			this(true);
+		}
 
 		TokenType(boolean mayCombine) {
 			this.mayCombine = mayCombine;
@@ -77,7 +85,10 @@ public class ConfigToken {
 
 	@Override
 	public String toString() {
+		String text = NEWLINE_PATTERN.matcher(this.text).replaceAll("\\\\n");
+		text = TAB_PATTERN.matcher(text).replaceAll("\\\\t");
+
 		return "ConfigurationToken{" + source + ':' + lineNumber + ':' + column +
-		       " (" + tokenType + ") \"" + NEWLINE_PATTERN.matcher(text).replaceAll(" ") + "\"}";
+		       " (" + tokenType + ") \"" + text + "\"}";
 	}
 }
