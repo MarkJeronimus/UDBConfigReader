@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.digitalmodular.udbconfigreader.lexer.ConfigToken;
 import org.digitalmodular.udbconfigreader.lexer.ConfigTokenizer;
+import org.digitalmodular.udbconfigreader.lexer.StringsLexer;
 
 /**
  * @author Zom-B
@@ -34,6 +35,7 @@ public class GameConfigurationIO {
 
 	private static void parseConfiguration(CharacterReader reader) {
 		List<ConfigToken> tokens = ConfigTokenizer.tokenize(reader);
+		tokens = StringsLexer.process(tokens);
 		tokens.forEach(System.out::println);
 	}
 }

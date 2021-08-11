@@ -32,7 +32,12 @@ public class ConfigToken {
 		OTHER(true),
 
 		// Don't include this token; it's redundant or erroneous (e.g. Carriage-return)
-		SKIP;
+		SKIP,
+
+		// Lexed tokens (not produced by the tokenizer)
+		STRING,
+		LINE_COMMENT,
+		BLOCK_COMMENT;
 
 		private final boolean mayCombine;
 
