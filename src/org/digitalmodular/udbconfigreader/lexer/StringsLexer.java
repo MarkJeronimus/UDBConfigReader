@@ -48,9 +48,13 @@ public final class StringsLexer {
 			}
 		}
 
-		// TODO remove debugging lines
-		System.out.println(firstStringToken);
-		System.out.println(stringContents);
+		if (firstStringToken != null) {
+			processedTokens.add(new ConfigToken(firstStringToken.getSource(),
+			                                    firstStringToken.getLineNumber(),
+			                                    firstStringToken.getColumn(),
+			                                    ConfigToken.TokenType.STRING,
+			                                    stringContents.toString()));
+		}
 
 		return processedTokens;
 	}

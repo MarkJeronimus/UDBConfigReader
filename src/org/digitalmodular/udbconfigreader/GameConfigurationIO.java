@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.digitalmodular.udbconfigreader.lexer.ConfigToken;
 import org.digitalmodular.udbconfigreader.lexer.ConfigTokenizer;
+import org.digitalmodular.udbconfigreader.lexer.StringsLexer;
 
 /**
  * @author Zom-B
@@ -16,8 +17,10 @@ import org.digitalmodular.udbconfigreader.lexer.ConfigTokenizer;
 public class GameConfigurationIO {
 	public static void main(String... args) throws IOException {
 //		loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg"));
-		loadGameConfiguration(Paths.get("Configurations/valid1.cfg"));
+//		loadGameConfiguration(Paths.get("Configurations/valid1.cfg"));
 //		loadGameConfiguration(Paths.get("Configurations/valid2.cfg"));
+//		loadGameConfiguration(Paths.get("Configurations/corrupt1.cfg"));
+		loadGameConfiguration(Paths.get("Configurations/corrupt2.cfg"));
 	}
 
 	public static ConfigStruct loadGameConfiguration(Path file) throws IOException {
@@ -36,7 +39,7 @@ public class GameConfigurationIO {
 
 	private static void parseConfiguration(CharacterReader reader) {
 		List<ConfigToken> tokens = ConfigTokenizer.tokenize(reader);
-//		tokens = StringsLexer.process(tokens);
+		tokens = StringsLexer.process(tokens);
 		tokens.forEach(System.out::println);
 	}
 }
