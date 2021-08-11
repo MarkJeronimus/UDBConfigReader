@@ -18,7 +18,7 @@ public class ConfigToken {
 	 */
 	// Created 2021-08-10
 	public enum TokenType {
-		NEWLINE(true),
+		NEWLINE(false),
 		WHITESPACE(true),
 		SLASH(false),
 		ASTERISK(false),
