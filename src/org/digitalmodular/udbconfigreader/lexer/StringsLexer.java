@@ -23,38 +23,34 @@ public final class StringsLexer {
 	public static List<ConfigToken> process(Collection<ConfigToken> tokens) {
 		List<ConfigToken> processedTokens = new ArrayList<>(tokens.size());
 
-		boolean               inString         = false;
 		@Nullable ConfigToken firstStringToken = null;
 		StringBuilder         stringContents   = new StringBuilder(80);
 
 		for (ConfigToken token : tokens) {
-			if (inString) {
+			if (firstStringToken != null) {
 				if (token.getTokenType() == ConfigToken.TokenType.STRING_DELIMITER) {
-					if (firstStringToken != null) {
-						assert stringContents.length() > 0;
-						unEscape(stringContents);
-						processedTokens.add(new ConfigToken(firstStringToken.getSource(),
-						                                    firstStringToken.getLineNumber(),
-						                                    firstStringToken.getColumn(),
-						                                    ConfigToken.TokenType.STRING,
-						                                    stringContents.toString()));
-						stringContents.setLength(0);
-						firstStringToken = null;
-					}
-
-					inString = false;
+					unEscape(stringContents);
+					processedTokens.add(new ConfigToken(firstStringToken.getSource(),
+					                                    firstStringToken.getLineNumber(),
+					                                    firstStringToken.getColumn(),
+					                                    ConfigToken.TokenType.STRING,
+					                                    stringContents.toString()));
+					stringContents.setLength(0);
+					firstStringToken = null;
 				} else {
 					stringContents.append(token.getText());
-					if (firstStringToken == null)
-						firstStringToken = token;
 				}
 			} else {
 				if (token.getTokenType() == ConfigToken.TokenType.STRING_DELIMITER)
-					inString = true;
+					firstStringToken = token;
 				else
 					processedTokens.add(token);
 			}
 		}
+
+		// TODO remove debugging lines
+		System.out.println(firstStringToken);
+		System.out.println(stringContents);
 
 		return processedTokens;
 	}

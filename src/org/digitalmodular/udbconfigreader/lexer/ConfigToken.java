@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import static org.digitalmodular.utilities.ValidatorUtilities.requireAtLeast;
 import static org.digitalmodular.utilities.ValidatorUtilities.requireNonNull;
-import static org.digitalmodular.utilities.ValidatorUtilities.requireStringLengthAtLeast;
 
 /**
  * @author Zom-B
@@ -61,7 +60,7 @@ public class ConfigToken {
 	private final String    text;
 
 	public ConfigToken(String source, int lineNumber, int column, TokenType tokenType, String text) {
-		this.text = requireStringLengthAtLeast(1, text, "text");
+		this.text = requireNonNull(text, "text");
 		this.source = requireNonNull(source, "source");
 		this.lineNumber = requireAtLeast(1, lineNumber, "lineNumber");
 		this.tokenType = requireNonNull(tokenType, "tokenType");
