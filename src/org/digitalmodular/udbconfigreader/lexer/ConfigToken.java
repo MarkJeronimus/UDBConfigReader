@@ -27,7 +27,9 @@ public class ConfigToken {
 		FUNCTION_END(false),
 		BLOCK_START(false),
 		BLOCK_END(false),
-		SYMBOL(true),
+		ASSIGNMENT(false),
+		LIST_SEPARATOR(false),
+		STATEMENT_SEPARATOR(true),
 		OTHER(true),
 
 		// Don't include this token; it's redundant or erroneous (e.g. Carriage-return)

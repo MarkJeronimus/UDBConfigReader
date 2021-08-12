@@ -9,17 +9,19 @@ import org.digitalmodular.utilities.annotation.UtilityClass;
 
 import org.digitalmodular.udbconfigreader.CharacterReader;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType;
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.ASSIGNMENT;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.ASTERISK;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.BLOCK_END;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.BLOCK_START;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.FUNCTION_END;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.FUNCTION_START;
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.LIST_SEPARATOR;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.NEWLINE;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.OTHER;
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STATEMENT_SEPARATOR;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SKIP;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SLASH;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STRING_DELIMITER;
-import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SYMBOL;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.WHITESPACE;
 
 /**
@@ -95,8 +97,12 @@ public final class ConfigTokenizer {
 			return BLOCK_START;
 		else if (ch == '}')
 			return BLOCK_END;
-		else if (ch == ';' || ch == '=' || ch == ',')
-			return SYMBOL;
+		else if (ch == '=')
+			return ASSIGNMENT;
+		else if (ch == ',')
+			return LIST_SEPARATOR;
+		else if (ch == ';')
+			return STATEMENT_SEPARATOR;
 		else
 			return OTHER;
 	}
