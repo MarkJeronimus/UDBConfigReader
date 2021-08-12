@@ -35,8 +35,7 @@ public class ConfigToken {
 
 		// Lexed tokens (not produced by the tokenizer)
 		STRING,
-		LINE_COMMENT,
-		BLOCK_COMMENT;
+		COMMENT;
 
 		private final boolean mayCombine;
 
