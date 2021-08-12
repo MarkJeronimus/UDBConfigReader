@@ -17,14 +17,27 @@ import org.digitalmodular.udbconfigreader.lexer.StringsLexer;
 // Created 2021-08-09
 public class GameConfigurationIO {
 	public static void main(String... args) throws IOException {
-		loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg"));
+		parseDirectory(Paths.get("Configurations/"));
+
+//		loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg"));
 //		loadGameConfiguration(Paths.get("Configurations/valid1.cfg"));
 //		loadGameConfiguration(Paths.get("Configurations/valid2.cfg"));
 //		loadGameConfiguration(Paths.get("Configurations/corrupt1.cfg"));
 //		loadGameConfiguration(Paths.get("Configurations/corrupt2.cfg"));
 	}
 
+	private static void parseDirectory(Path path) throws IOException {
+		for (Path file : Files.newDirectoryStream(path)) {
+			if (Files.isDirectory(file))
+				parseDirectory(file);
+			else
+				loadGameConfiguration(file);
+		}
+	}
+
 	public static ConfigStruct loadGameConfiguration(Path file) throws IOException {
+		System.out.println("### " + file);
+
 		try {
 			List<String>    lines  = Files.readAllLines(file);
 			CharacterReader reader = new CharacterReader(file.getFileName().toString(), lines);
