@@ -75,6 +75,9 @@ public final class StringsLexer {
 					case '\\':
 						ch = '\\';
 						break;
+					case 'n':
+						ch = '\n';
+						break;
 					default:
 						Logger.getGlobal().log(WARNING, "WARNING: Probably unimplemented escape: " + sb.substring(i));
 						escapeLen = 0;
