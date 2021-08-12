@@ -29,7 +29,7 @@ public final class StringsLexer {
 		for (ConfigToken token : tokens) {
 			if (firstStringToken != null) {
 				if (token.getTokenType() == ConfigToken.TokenType.STRING_DELIMITER) {
-					unEscape(stringContents);
+					unEscape(stringContents, firstStringToken);
 					processedTokens.add(new ConfigToken(firstStringToken.getSource(),
 					                                    firstStringToken.getLineNumber(),
 					                                    firstStringToken.getColumn(),
@@ -59,7 +59,7 @@ public final class StringsLexer {
 		return processedTokens;
 	}
 
-	private static void unEscape(StringBuilder sb) {
+	private static void unEscape(StringBuilder sb, ConfigToken token) {
 		for (int i = 0; i < sb.length(); i++) {
 			char ch = sb.charAt(i);
 
@@ -79,7 +79,9 @@ public final class StringsLexer {
 						ch = '\n';
 						break;
 					default:
-						Logger.getGlobal().log(WARNING, "WARNING: Probably unimplemented escape: " + sb.substring(i));
+						Logger.getGlobal().log(WARNING, "Probable unimplemented escape in " + token.getSource() + ':' +
+						                                token.getLineNumber() + ':' + (token.getColumn() + i) + ": " +
+						                                sb.substring(i));
 						escapeLen = 0;
 				}
 
