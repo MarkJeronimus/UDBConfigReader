@@ -47,9 +47,8 @@ public final class StringsLexer {
 			}
 		}
 
-		if (firstStringToken != null) {
-			processedTokens.add(firstStringToken.replace(STRING, stringContents.toString()));
-		}
+		if (firstStringToken != null)
+			throw new IllegalArgumentException("Unclosed string literal at " + firstStringToken.getLocationString());
 
 		return processedTokens;
 	}
@@ -74,8 +73,9 @@ public final class StringsLexer {
 						ch = '\n';
 						break;
 					default:
-						Logger.getGlobal().log(WARNING, "Probable unimplemented escape in " + token.getLocationString(i) +
-						                                ": " + sb.substring(i));
+						Logger.getGlobal()
+						      .log(WARNING, "Probable unimplemented escape in " + token.getLocationString(i) +
+						                    ": " + sb.substring(i));
 						escapeLen = 0;
 				}
 
