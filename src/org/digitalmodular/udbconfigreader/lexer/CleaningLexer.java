@@ -8,7 +8,6 @@ import org.digitalmodular.utilities.annotation.UtilityClass;
 
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.COMMENT;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.NEWLINE;
-import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STATEMENT_SEPARATOR;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.WHITESPACE;
 
 /**
@@ -29,8 +28,7 @@ public final class CleaningLexer {
 
 			if (tokenType == WHITESPACE ||
 			    tokenType == COMMENT ||
-			    tokenType == NEWLINE ||
-			    tokenType == STATEMENT_SEPARATOR)
+			    tokenType == NEWLINE)
 				continue;
 
 			processedTokens.add(token);
