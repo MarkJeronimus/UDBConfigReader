@@ -74,9 +74,8 @@ public final class StringsLexer {
 						ch = '\n';
 						break;
 					default:
-						Logger.getGlobal().log(WARNING, "Probable unimplemented escape in " + token.getSource() + ':' +
-						                                token.getLineNumber() + ':' + (token.getColumn() + i) + ": " +
-						                                sb.substring(i));
+						Logger.getGlobal().log(WARNING, "Probable unimplemented escape in " + token.getLocationString(i) +
+						                                ": " + sb.substring(i));
 						escapeLen = 0;
 				}
 

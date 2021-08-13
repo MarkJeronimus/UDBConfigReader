@@ -95,12 +95,22 @@ public class ConfigToken {
 		return text;
 	}
 
-	@Override
-	public String toString() {
+	public String getLocationString() {
+		return getLocationString(0);
+	}
+
+	public String getLocationString(int columnOffset) {
+		return getSource() + ':' + getLineNumber() + ':' + (getColumn() + columnOffset);
+	}
+
+	public String getEscapedText() {
 		String text = NEWLINE_PATTERN.matcher(this.text).replaceAll("\\\\n");
 		text = TAB_PATTERN.matcher(text).replaceAll("\\\\t");
+		return text;
+	}
 
-		return "ConfigurationToken{" + source + ':' + lineNumber + ':' + column +
-		       " (" + tokenType + ") \"" + text + "\"}";
+	@Override
+	public String toString() {
+		return "ConfigurationToken{" + getLocationString() + " (" + getTokenType() + ") \"" + getEscapedText() + "\"}";
 	}
 }
