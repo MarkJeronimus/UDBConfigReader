@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.digitalmodular.udbconfigreader.lexer.CleaningLexer;
 import org.digitalmodular.udbconfigreader.lexer.CommentsLexer;
 import org.digitalmodular.udbconfigreader.lexer.ConfigToken;
 import org.digitalmodular.udbconfigreader.lexer.ConfigTokenizer;
