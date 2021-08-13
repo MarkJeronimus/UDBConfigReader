@@ -10,6 +10,9 @@ import org.jetbrains.annotations.Nullable;
 
 import org.digitalmodular.utilities.annotation.UtilityClass;
 
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STRING;
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STRING_DELIMITER;
+
 /**
  * @author Zom-B
  */
@@ -28,20 +31,16 @@ public final class StringsLexer {
 
 		for (ConfigToken token : tokens) {
 			if (firstStringToken != null) {
-				if (token.getTokenType() == ConfigToken.TokenType.STRING_DELIMITER) {
+				if (token.getTokenType() == STRING_DELIMITER) {
 					unEscape(stringContents, firstStringToken);
-					processedTokens.add(new ConfigToken(firstStringToken.getSource(),
-					                                    firstStringToken.getLineNumber(),
-					                                    firstStringToken.getColumn(),
-					                                    ConfigToken.TokenType.STRING,
-					                                    stringContents.toString()));
+					processedTokens.add(firstStringToken.replace(STRING, stringContents.toString()));
 					stringContents.setLength(0);
 					firstStringToken = null;
 				} else {
 					stringContents.append(token.getText());
 				}
 			} else {
-				if (token.getTokenType() == ConfigToken.TokenType.STRING_DELIMITER)
+				if (token.getTokenType() == STRING_DELIMITER)
 					firstStringToken = token;
 				else
 					processedTokens.add(token);
@@ -49,11 +48,7 @@ public final class StringsLexer {
 		}
 
 		if (firstStringToken != null) {
-			processedTokens.add(new ConfigToken(firstStringToken.getSource(),
-			                                    firstStringToken.getLineNumber(),
-			                                    firstStringToken.getColumn(),
-			                                    ConfigToken.TokenType.STRING,
-			                                    stringContents.toString()));
+			processedTokens.add(firstStringToken.replace(STRING, stringContents.toString()));
 		}
 
 		return processedTokens;

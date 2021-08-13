@@ -68,6 +68,13 @@ public class ConfigToken {
 		this.column = requireAtLeast(1, column, "column");
 	}
 
+	/**
+	 * Replaces the {@code tokenType} and {@code text} while preserving the source coordinates.
+	 */
+	public ConfigToken replace(TokenType tokenType, String text) {
+		return new ConfigToken(getSource(), getLineNumber(), getColumn(), tokenType, text);
+	}
+
 	public String getSource() {
 		return source;
 	}

@@ -67,11 +67,7 @@ public final class CommentsLexer {
 					break;
 				case LINE:
 					if (tokenType == NEWLINE) {
-						processedTokens.add(new ConfigToken(firstCommentToken.getSource(),
-						                                    firstCommentToken.getLineNumber(),
-						                                    firstCommentToken.getColumn(),
-						                                    COMMENT,
-						                                    commentText.toString()));
+						processedTokens.add(firstCommentToken.replace(COMMENT, commentText.toString()));
 						processedTokens.add(token);
 						commentType = CommentType.NONE;
 						commentText.setLength(0);
@@ -88,11 +84,7 @@ public final class CommentsLexer {
 				case BLOCK_MAYBE_END:
 					commentText.append(token.getText());
 					if (tokenType == SLASH) {
-						processedTokens.add(new ConfigToken(firstCommentToken.getSource(),
-						                                    firstCommentToken.getLineNumber(),
-						                                    firstCommentToken.getColumn(),
-						                                    COMMENT,
-						                                    commentText.toString()));
+						processedTokens.add(firstCommentToken.replace(COMMENT, commentText.toString()));
 						commentType = CommentType.NONE;
 						commentText.setLength(0);
 					} else if (tokenType != ASTERISK) {
