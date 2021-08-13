@@ -18,9 +18,9 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.FUN
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.LIST_SEPARATOR;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.NEWLINE;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.OTHER;
-import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STATEMENT_SEPARATOR;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SKIP;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SLASH;
+import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STATEMENT_SEPARATOR;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STRING_DELIMITER;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.WHITESPACE;
 

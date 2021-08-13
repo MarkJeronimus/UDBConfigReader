@@ -111,6 +111,6 @@ public class ConfigToken {
 
 	@Override
 	public String toString() {
-		return "ConfigurationToken{" + getLocationString() + " (" + getTokenType() + ") \"" + getEscapedText() + "\"}";
+		return "ConfigToken{" + getLocationString() + " (" + getTokenType() + ") \"" + getEscapedText() + "\"}";
 	}
 }
