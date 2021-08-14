@@ -10,6 +10,7 @@ import org.digitalmodular.udbconfigreader.lexer.CleaningLexer;
 import org.digitalmodular.udbconfigreader.lexer.CommentsLexer;
 import org.digitalmodular.udbconfigreader.lexer.ConfigToken;
 import org.digitalmodular.udbconfigreader.lexer.ConfigTokenizer;
+import org.digitalmodular.udbconfigreader.lexer.KeywordLexer;
 import org.digitalmodular.udbconfigreader.lexer.StringsLexer;
 
 /**
@@ -39,9 +40,12 @@ public class GameConfigurationIO {
 
 	private static void parseConfiguration(CharacterReader reader) {
 		List<ConfigToken> tokens = ConfigTokenizer.tokenize(reader);
+
 		tokens = StringsLexer.process(tokens);
 		tokens = CommentsLexer.process(tokens);
+		tokens = KeywordLexer.process(tokens);
 		tokens = CleaningLexer.process(tokens);
+
 		tokens.forEach(System.out::println);
 	}
 }
