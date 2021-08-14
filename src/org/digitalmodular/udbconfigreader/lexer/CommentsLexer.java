@@ -60,6 +60,7 @@ public final class CommentsLexer {
 						commentType = CommentType.BLOCK;
 						commentText.append(token.getText());
 					} else {
+						processedTokens.add(firstCommentToken);
 						processedTokens.add(token);
 						commentType = CommentType.NONE;
 						commentText.setLength(0);

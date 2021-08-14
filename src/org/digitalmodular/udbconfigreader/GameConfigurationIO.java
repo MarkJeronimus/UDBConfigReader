@@ -19,7 +19,8 @@ import org.digitalmodular.udbconfigreader.lexer.StringsLexer;
 public class GameConfigurationIO {
 	public static void main(String... args) throws IOException {
 //		loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg"));
-		loadGameConfiguration(Paths.get("Configurations/Includes/Test_params.cfg"));
+//		loadGameConfiguration(Paths.get("Configurations/Includes/Test_params.cfg"));
+		loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg"));
 	}
 
 	public static ConfigStruct loadGameConfiguration(Path file) throws IOException {
