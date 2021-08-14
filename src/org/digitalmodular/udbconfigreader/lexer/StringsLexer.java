@@ -28,14 +28,20 @@ public final class StringsLexer {
 
 		@Nullable ConfigToken firstStringToken = null;
 		StringBuilder         stringContents   = new StringBuilder(80);
+		@Nullable ConfigToken lastToken        = null;
 
 		for (ConfigToken token : tokens) {
 			if (firstStringToken != null) {
 				if (token.getTokenType() == STRING_DELIMITER) {
-					unEscape(stringContents, firstStringToken);
-					processedTokens.add(firstStringToken.replace(STRING, stringContents.toString()));
-					stringContents.setLength(0);
-					firstStringToken = null;
+					assert lastToken != null;
+					if (lastToken.getText().endsWith("\\")) {
+						stringContents.append(token.getText());
+					} else {
+						unEscape(stringContents, firstStringToken);
+						processedTokens.add(firstStringToken.replace(STRING, stringContents.toString()));
+						stringContents.setLength(0);
+						firstStringToken = null;
+					}
 				} else {
 					stringContents.append(token.getText());
 				}
@@ -45,6 +51,7 @@ public final class StringsLexer {
 				else
 					processedTokens.add(token);
 			}
+			lastToken = token;
 		}
 
 		if (firstStringToken != null)
@@ -68,6 +75,9 @@ public final class StringsLexer {
 				switch (nextCh) {
 					case '\\':
 						ch = '\\';
+						break;
+					case '"':
+						ch = '"';
 						break;
 					case 'n':
 						ch = '\n';

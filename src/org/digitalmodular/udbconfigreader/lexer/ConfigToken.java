@@ -12,6 +12,7 @@ import static org.digitalmodular.utilities.ValidatorUtilities.requireNonNull;
 public class ConfigToken {
 	private static final Pattern NEWLINE_PATTERN = Pattern.compile("\n");
 	private static final Pattern TAB_PATTERN     = Pattern.compile("\t");
+	private static final Pattern QUOTE_PATTERN   = Pattern.compile("\"");
 
 	/**
 	 * @author Zom-B
@@ -106,6 +107,7 @@ public class ConfigToken {
 	public String getEscapedText() {
 		String text = NEWLINE_PATTERN.matcher(this.text).replaceAll("\\\\n");
 		text = TAB_PATTERN.matcher(text).replaceAll("\\\\t");
+		text = QUOTE_PATTERN.matcher(text).replaceAll("\\\\\"");
 		return text;
 	}
 
