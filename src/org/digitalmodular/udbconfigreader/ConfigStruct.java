@@ -36,8 +36,17 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 	public void put(String key, @Nullable Object value) {
 		requireStringLengthAtLeast(1, key, "key");
 
-		if (value instanceof ConfigStruct)
-			throw new IllegalArgumentException("'value' cannot be ConfigurationStruct");
+		if (value instanceof ConfigStruct) {
+			String name = ((ConfigStruct)value).getName();
+			if (!key.equals(name)) {
+				throw new IllegalArgumentException(
+						"specified 'key' and the 'name' of the specified ConfigurationStruct don't match:" + key +
+						", " + name);
+			}
+
+			merge((ConfigStruct)value);
+			return;
+		}
 
 		if (value == null)
 			values.remove(key);
@@ -45,7 +54,7 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 			values.put(key, value);
 	}
 
-	public void put(ConfigStruct struct) {
+	private void merge(ConfigStruct struct) {
 		String key = struct.getName();
 
 		@Nullable Object oldValue = values.get(key);
