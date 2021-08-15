@@ -1,8 +1,12 @@
 package org.digitalmodular.udbconfigreader;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -18,11 +22,13 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STA
 // Created 2021-08-13
 @UtilityClass
 public final class ConfigParser {
+	private static final Pattern BACKSLASH_PATTERN = Pattern.compile("\\\\");
+
 	private ConfigParser() {
 		throw new AssertionError();
 	}
 
-	public static void parse(Iterable<ConfigToken> tokens, ConfigStruct destination) {
+	public static void parse(List<Path> fileStack, Iterable<ConfigToken> tokens, ConfigStruct destination) {
 		Iterator<ConfigToken> iter = tokens.iterator();
 
 		while (iter.hasNext()) {
@@ -31,7 +37,7 @@ public final class ConfigParser {
 				case STATEMENT_SEPARATOR:
 					continue;
 				case OTHER:
-					parseEntry(token, iter, destination);
+					parseEntry(fileStack, token, iter, destination);
 					break;
 				default:
 					throwSyntaxError(token, "identifier");
@@ -40,7 +46,7 @@ public final class ConfigParser {
 	}
 
 	private static void parseEntry(
-			ConfigToken firstToken, Iterator<ConfigToken> iter, ConfigStruct destination) {
+			List<Path> fileStack, ConfigToken firstToken, Iterator<ConfigToken> iter, ConfigStruct destination) {
 		ConfigToken token = iter.next();
 
 		switch (token.getTokenType()) {
@@ -48,10 +54,10 @@ public final class ConfigParser {
 				parseAssignment(firstToken, iter, destination);
 				return;
 			case FUNCTION_START:
-				parseFunction(firstToken, iter, destination);
+				parseFunction(fileStack, firstToken, iter, destination);
 				return;
 			case BLOCK_START:
-				parseBlock(firstToken, iter, destination);
+				parseBlock(fileStack, firstToken, iter, destination);
 				return;
 			case STATEMENT_SEPARATOR:
 				destination.put(firstToken.getText(), null);
@@ -120,8 +126,8 @@ public final class ConfigParser {
 	}
 
 	private static void parseFunction(
-			ConfigToken firstToken, Iterator<ConfigToken> iter, ConfigStruct destination) {
-		Collection<Object> parameters = new ArrayList<>(8);
+			List<Path> fileStack, ConfigToken firstToken, Iterator<ConfigToken> iter, ConfigStruct destination) {
+		List<Object> parameters = new ArrayList<>(8);
 
 		boolean     requireValue = true;
 		ConfigToken token;
@@ -143,8 +149,7 @@ public final class ConfigParser {
 
 					break;
 				case FUNCTION_END:
-					// TODO handle function
-					System.out.println(firstToken.getText() + parameters);
+					callFunction(fileStack, firstToken, parameters, destination);
 					return;
 				default:
 					throwSyntaxError(token, "nothing");
@@ -154,8 +159,73 @@ public final class ConfigParser {
 		}
 	}
 
+	private static void callFunction(
+			List<Path> fileStack, ConfigToken firstToken, List<Object> parameters, ConfigStruct destination) {
+		String function = firstToken.getText();
+		assert !function.isEmpty();
+		if ("include".equals(function.toLowerCase())) {
+			callIncludeFunction(fileStack, firstToken, parameters, destination);
+		} else {
+			throw new IllegalArgumentException("Unknown function: " + function + ", at " +
+			                                   firstToken.getLocationString());
+		}
+	}
+
+	private static void callIncludeFunction(
+			List<Path> fileStack, ConfigToken firstToken, List<Object> parameters, ConfigStruct destination) {
+		if (parameters.isEmpty())
+			throw new IllegalArgumentException("include() is missing parameters, at " + firstToken.getLocationString());
+
+		Object filename = parameters.get(0);
+		if (!(filename instanceof String))
+			throw new IllegalArgumentException("First parameter of include() must be a string, at " +
+			                                   firstToken.getLocationString());
+
+		Object section = parameters.size() > 1 ? parameters.get(1) : "";
+		if (!(section instanceof String))
+			throw new IllegalArgumentException("Second parameter of include() must be a string, at " +
+			                                   firstToken.getLocationString());
+
+		String filenameString = BACKSLASH_PATTERN.matcher(((String)filename)).replaceAll("/");
+
+		assert !fileStack.isEmpty();
+		Path originalFile = fileStack.get(fileStack.size() - 1);
+		Path includeFile  = originalFile.getParent().resolve(filenameString);
+
+		if (fileStack.contains(includeFile)) {
+			fileStack.stream()
+			         .map(Path::getFileName)
+			         .map(Object::toString)
+			         .collect(Collectors.joining("->"));
+			throw new IllegalArgumentException("Circular include chain detected: " + fileStack + "->" + includeFile +
+			                                   ", at " + firstToken.getLocationString());
+		}
+
+		fileStack.add(includeFile);
+
+		try {
+			ConfigStruct block = GameConfigurationIO.loadConfigurationFile(fileStack);
+
+			String sectionName = (String)section;
+			if (((String)section).isEmpty()) {
+				destination.putAll(block);
+			} else {
+				@Nullable Object value = block.get(sectionName);
+				if (!(value instanceof ConfigStruct))
+					throw new IllegalArgumentException("Include is missing requested structure, at " +
+					                                   firstToken.getLocationString());
+
+				destination.putAll((ConfigStruct)value);
+			}
+		} catch (IOException ex) {
+			throw new IllegalArgumentException("Unable to read include file: " + filename, ex);
+		} finally {
+			fileStack.remove(fileStack.size() - 1);
+		}
+	}
+
 	private static void parseBlock(
-			ConfigToken firstToken, Iterator<ConfigToken> iter, ConfigStruct destination) {
+			List<Path> fileStack, ConfigToken firstToken, Iterator<ConfigToken> iter, ConfigStruct destination) {
 		requireHasNextToken(iter, firstToken, "a block");
 
 		ConfigStruct block = new ConfigStruct(firstToken.getText(), destination.isSorted(), 16);
@@ -167,7 +237,7 @@ public final class ConfigParser {
 				case STATEMENT_SEPARATOR:
 					continue;
 				case OTHER:
-					parseEntry(token, iter, block);
+					parseEntry(fileStack, token, iter, block);
 					break;
 				case BLOCK_END:
 					destination.put(firstToken.getText(), block);

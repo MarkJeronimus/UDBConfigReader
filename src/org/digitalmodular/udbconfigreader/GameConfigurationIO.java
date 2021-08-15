@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -19,16 +20,21 @@ import org.digitalmodular.udbconfigreader.lexer.StringsLexer;
  * @author Zom-B
  */
 // Created 2021-08-09
-public class GameConfigurationIO {
+public final class GameConfigurationIO {
+	private GameConfigurationIO() {
+		throw new AssertionError();
+	}
+
 	public static void main(String... args) throws IOException {
 //		parseDirectory(Paths.get("Configurations/"));
 
-//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg")));
+		System.out.println(loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg")));
 //		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Test_params.cfg")));
-		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg")));
+//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg")));
+//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Heretic_misc.cfg")));
 	}
 
-	private static void parseDirectory(Path path) throws IOException {
+	public static void parseDirectory(Path path) throws IOException {
 		for (Path file : Files.newDirectoryStream(path)) {
 			if (Files.isDirectory(file)) {
 				parseDirectory(file);
@@ -44,6 +50,15 @@ public class GameConfigurationIO {
 	}
 
 	public static ConfigStruct loadGameConfiguration(Path file) throws IOException {
+		List<Path> fileStack = new ArrayList<>(4);
+		fileStack.add(file);
+		return loadConfigurationFile(fileStack);
+	}
+
+	static ConfigStruct loadConfigurationFile(List<Path> fileStack) throws IOException {
+		assert !fileStack.isEmpty();
+		Path file = fileStack.get(fileStack.size() - 1);
+
 		@Nullable ConfigStruct gameConfiguration = ConfigFileCache.INSTANCE.get(file);
 		if (gameConfiguration != null)
 			return gameConfiguration;
@@ -54,7 +69,7 @@ public class GameConfigurationIO {
 
 			gameConfiguration = new ConfigStruct(file.toString(), true, 16);
 
-			parseConfiguration(reader, gameConfiguration);
+			parseConfiguration(fileStack, reader, gameConfiguration);
 
 			ConfigFileCache.INSTANCE.add(file, gameConfiguration);
 			return gameConfiguration;
@@ -64,7 +79,8 @@ public class GameConfigurationIO {
 		}
 	}
 
-	private static void parseConfiguration(CharacterReader reader, ConfigStruct gameConfiguration) {
+	private static void parseConfiguration(
+			List<Path> fileStack, CharacterReader reader, ConfigStruct gameConfiguration) {
 		List<ConfigToken> tokens = ConfigTokenizer.tokenize(reader);
 
 		tokens = StringsLexer.process(tokens);
@@ -73,6 +89,6 @@ public class GameConfigurationIO {
 		tokens = CleaningLexer.process(tokens);
 
 //		tokens.forEach(System.out::println);
-		ConfigParser.parse(tokens, gameConfiguration);
+		ConfigParser.parse(fileStack, tokens, gameConfiguration);
 	}
 }

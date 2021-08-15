@@ -68,6 +68,11 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 		}
 	}
 
+	public void putAll(ConfigStruct struct) {
+		for (Entry<String, Object> entry : struct)
+			put(entry.getKey(), entry.getValue());
+	}
+
 	public boolean isSorted() {
 		return sorted;
 	}
