@@ -76,4 +76,36 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 	public Iterator<Map.Entry<String, Object>> iterator() {
 		return values.entrySet().iterator();
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(16384);
+		prettyPrint(this, sb, 0);
+		return sb.toString();
+	}
+
+	private static void prettyPrint(ConfigStruct struct, StringBuilder sb, int indentation) {
+		sb.append("\t".repeat(Math.max(0, indentation)));
+		sb.append(struct.getName()).append(" {\n");
+		indentation++;
+
+		for (Entry<String, Object> entry : struct) {
+			@Nullable Object value = entry.getValue();
+			if (value instanceof ConfigStruct)
+				prettyPrint((ConfigStruct)value, sb, indentation);
+			else if (value == null)
+				sb.append("\t".repeat(Math.max(0, indentation)))
+				  .append(entry.getKey()).append(";\n");
+			else if (value instanceof String)
+				sb.append("\t".repeat(Math.max(0, indentation)))
+				  .append(entry.getKey()).append(" = \"").append(value).append("\";\n");
+			else
+				sb.append("\t".repeat(Math.max(0, indentation)))
+				  .append(entry.getKey()).append(" = ").append(value).append(";\n");
+		}
+
+		indentation--;
+		sb.append("\t".repeat(Math.max(0, indentation))).append("}\n");
+	}
+
 }

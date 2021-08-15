@@ -23,10 +23,9 @@ public class GameConfigurationIO {
 	public static void main(String... args) throws IOException {
 //		parseDirectory(Paths.get("Configurations/"));
 
-//		loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg"));
-//		loadGameConfiguration(Paths.get("Configurations/Includes/Test_params.cfg"));
-		loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg"));
-		loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg"));
+//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg")));
+//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Test_params.cfg")));
+		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg")));
 	}
 
 	private static void parseDirectory(Path path) throws IOException {
