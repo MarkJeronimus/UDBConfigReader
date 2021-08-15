@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import org.digitalmodular.udbconfigreader.lexer.CleaningLexer;
 import org.digitalmodular.udbconfigreader.lexer.CommentsLexer;
 import org.digitalmodular.udbconfigreader.lexer.ConfigToken;
@@ -19,11 +21,12 @@ import org.digitalmodular.udbconfigreader.lexer.StringsLexer;
 // Created 2021-08-09
 public class GameConfigurationIO {
 	public static void main(String... args) throws IOException {
-		parseDirectory(Paths.get("Configurations/"));
+//		parseDirectory(Paths.get("Configurations/"));
 
 //		loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg"));
 //		loadGameConfiguration(Paths.get("Configurations/Includes/Test_params.cfg"));
-//		loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg"));
+		loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg"));
+		loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg"));
 	}
 
 	private static void parseDirectory(Path path) throws IOException {
@@ -42,14 +45,19 @@ public class GameConfigurationIO {
 	}
 
 	public static ConfigStruct loadGameConfiguration(Path file) throws IOException {
+		@Nullable ConfigStruct gameConfiguration = ConfigFileCache.INSTANCE.get(file);
+		if (gameConfiguration != null)
+			return gameConfiguration;
+
 		try {
 			List<String>    lines  = Files.readAllLines(file);
 			CharacterReader reader = new CharacterReader(file.getFileName().toString(), lines);
 
-			ConfigStruct gameConfiguration = new ConfigStruct(file.toString(), true, 16);
+			gameConfiguration = new ConfigStruct(file.toString(), true, 16);
 
 			parseConfiguration(reader, gameConfiguration);
 
+			ConfigFileCache.INSTANCE.add(file, gameConfiguration);
 			return gameConfiguration;
 		} catch (IOException ex) {
 			// Unable to load configuration
