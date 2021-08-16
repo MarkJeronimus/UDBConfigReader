@@ -61,10 +61,7 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 			return;
 		}
 
-		if (value == null)
-			values.remove(key);
-		else
-			values.put(key, value);
+		values.put(key, value);
 	}
 
 	private void merge(ConfigStruct struct) {
