@@ -3,7 +3,6 @@ package org.digitalmodular.udbconfigreader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,36 +24,22 @@ public final class GameConfigurationIO {
 		throw new AssertionError();
 	}
 
-	public static void main(String... args) throws IOException {
-//		parseDirectory(Paths.get("Configurations/"));
-
-		System.out.println(loadGameConfiguration(Paths.get("Configurations/Doom_DoomDoom.cfg")));
-//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Test_params.cfg")));
-//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Boom_linedefs.cfg")));
-//		System.out.println(loadGameConfiguration(Paths.get("Configurations/Includes/Heretic_misc.cfg")));
-	}
-
-	public static void parseDirectory(Path path) throws IOException {
-		for (Path file : Files.newDirectoryStream(path)) {
-			if (Files.isDirectory(file)) {
-				parseDirectory(file);
-				continue;
-			}
-
-			String filename = file.getFileName().toString();
-			if (filename.startsWith("valid") || filename.startsWith("corrupt"))
-				continue;
-
-			loadGameConfiguration(file);
-		}
-	}
-
+	/**
+	 * Load a configuration file as a {@code ConfigStruct} structure.
+	 */
 	public static ConfigStruct loadGameConfiguration(Path file) throws IOException {
 		List<Path> fileStack = new ArrayList<>(4);
 		fileStack.add(file);
 		return loadConfigurationFile(fileStack);
 	}
 
+	/**
+	 * Internal method to load configuration files recursively, via
+	 *
+	 * @param fileStack The list of files which are currently being parsed.
+	 *                  Each subsequent element is a file included by the previous element.
+	 *                  The last element is the one to parse next.
+	 */
 	static ConfigStruct loadConfigurationFile(List<Path> fileStack) throws IOException {
 		assert !fileStack.isEmpty();
 		Path file = fileStack.get(fileStack.size() - 1);
@@ -74,7 +59,6 @@ public final class GameConfigurationIO {
 			ConfigFileCache.INSTANCE.add(file, gameConfiguration);
 			return gameConfiguration;
 		} catch (IOException ex) {
-			// Unable to load configuration
 			throw new IOException("Unable to load the game configuration file: " + file, ex);
 		}
 	}
@@ -88,7 +72,6 @@ public final class GameConfigurationIO {
 		tokens = KeywordLexer.process(tokens);
 		tokens = CleaningLexer.process(tokens);
 
-//		tokens.forEach(System.out::println);
 		ConfigParser.parse(fileStack, tokens, gameConfiguration);
 	}
 }

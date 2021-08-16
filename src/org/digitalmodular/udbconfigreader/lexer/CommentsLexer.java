@@ -14,6 +14,8 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.NEW
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.SLASH;
 
 /**
+ * Combines tokens into comments.
+ *
  * @author Zom-B
  */
 // Created 2021-08-10

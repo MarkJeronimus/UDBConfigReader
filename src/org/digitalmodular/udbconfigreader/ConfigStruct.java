@@ -11,6 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import static org.digitalmodular.utilities.ValidatorUtilities.requireStringLengthAtLeast;
 
 /**
+ * A structure with a name and holding key-value pairs, where value can be a literal value or another structure.
+ * <p>
+ * During construction, the choice can be made to keep the entries in order of being added.
+ *
  * @author Zom-B
  */
 // Created 2021-08-09
@@ -33,6 +37,15 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 		return values.get(key);
 	}
 
+	/**
+	 * Stores or overwrites the specified value at the specified key.
+	 * <p>
+	 * If the value is not another {@code ConfigStruct}, it stores the value, overwriting any previous value.
+	 * <p>
+	 * If the value is a {@code ConfigStruct}, special logic is applied:
+	 * <ul><li>If the value stored for this key is another {@code ConfigStruct}, it merges the two structs,</li>
+	 * <li>Otherwise it directly stores the value, overwriting any previous value.</li></ul>
+	 */
 	public void put(String key, @Nullable Object value) {
 		requireStringLengthAtLeast(1, key, "key");
 
@@ -68,6 +81,11 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 		}
 	}
 
+	/**
+	 * Adds all elements in the specified struct to this struct.
+	 * <p>
+	 * Entries with a key that already exists are overwritten.
+	 */
 	public void putAll(ConfigStruct struct) {
 		for (Entry<String, Object> entry : struct)
 			put(entry.getKey(), entry.getValue());
@@ -112,5 +130,4 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 		indentation--;
 		sb.append("\t".repeat(Math.max(0, indentation))).append("}\n");
 	}
-
 }

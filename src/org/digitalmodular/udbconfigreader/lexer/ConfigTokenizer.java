@@ -25,6 +25,12 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STR
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.WHITESPACE;
 
 /**
+ * Tokenizer tailored for configuration files.
+ * <p>
+ * Groups runs of characters that perform the same grammatical function into tokens,
+ * and attaches a {@link TokenType} based on a guess which lexical role the characters will fulfill.
+ * The resulting tokens can later be processed into final tokens by 'lexers'.
+ *
  * @author Zom-B
  */
 // Created 2021-08-10
@@ -53,22 +59,22 @@ public final class ConfigTokenizer {
 
 			if (tokenType != null) {
 				tokens.add(new ConfigToken(reader.getSource(),
-				                           reader.getStoredLineNumber() + 1,
-				                           reader.getStoredColumn() + 1,
+				                           reader.getMarkedLineNumber(),
+				                           reader.getMarkedColumn(),
 				                           tokenType,
 				                           sb.toString()));
 				sb.setLength(0);
 			}
 
 			sb.append((char)ch);
-			reader.storeLocation();
+			reader.markLocation();
 			tokenType = detectedType;
 		}
 
 		if (tokenType != null) {
 			tokens.add(new ConfigToken(reader.getSource(),
-			                           reader.getStoredLineNumber() + 1,
-			                           reader.getStoredColumn() + 1,
+			                           reader.getMarkedLineNumber(),
+			                           reader.getMarkedColumn(),
 			                           tokenType,
 			                           sb.toString()));
 		}

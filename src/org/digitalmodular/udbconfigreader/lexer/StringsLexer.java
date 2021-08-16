@@ -14,6 +14,11 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STR
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STRING_DELIMITER;
 
 /**
+ * Combines tokens into strings.
+ * <p>
+ * This should be the first lexer applied to the token stream to prevent parts of strings from being interpreted as
+ * other significant tokens.
+ *
  * @author Zom-B
  */
 // Created 2021-08-10
@@ -93,9 +98,6 @@ public final class StringsLexer {
 					sb.setCharAt(i, ch);
 					sb.delete(i + 1, i + escapeLen + 1);
 				}
-
-				if (escapeLen > 1)
-					i -= escapeLen;
 			}
 		}
 	}

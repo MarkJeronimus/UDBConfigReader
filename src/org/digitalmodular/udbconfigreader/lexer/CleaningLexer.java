@@ -11,6 +11,8 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.NEW
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.WHITESPACE;
 
 /**
+ * Lexer which removes whitespace, comment, and newline tokens.
+ *
  * @author Zom-B
  */
 // Created 2021-08-12

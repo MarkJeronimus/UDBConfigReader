@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import org.digitalmodular.utilities.annotation.Singleton;
 
 /**
+ * Caches parsed config files, so multiple calls to {@code include()} with
+ * the same filename won't cause that file to be parsed multiple times.
+ *
  * @author Zom-B
  */
 // Created 2021-08-15

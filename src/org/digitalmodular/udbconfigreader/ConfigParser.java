@@ -17,6 +17,9 @@ import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType;
 import static org.digitalmodular.udbconfigreader.lexer.ConfigToken.TokenType.STATEMENT_SEPARATOR;
 
 /**
+ * Parses the tokens (which should've been preprocessed by a sequence of lexers)
+ * into the specified structure, and executes functions it encounters.
+ *
  * @author Zom-B
  */
 // Created 2021-08-13
@@ -28,6 +31,12 @@ public final class ConfigParser {
 		throw new AssertionError();
 	}
 
+	/**
+	 * @param fileStack The list of files which are currently being parsed.
+	 *                  Each subsequent element is a file included by the previous element.
+	 *                  The last element is the one being parsed.
+	 *                  This is used exclusively by the {@code include()} function, to detect loops.
+	 */
 	public static void parse(List<Path> fileStack, Iterable<ConfigToken> tokens, ConfigStruct destination) {
 		Iterator<ConfigToken> iter = tokens.iterator();
 

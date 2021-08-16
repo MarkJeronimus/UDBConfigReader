@@ -5,7 +5,16 @@ import java.util.List;
 import static org.digitalmodular.utilities.ValidatorUtilities.requireNonNull;
 
 /**
- * Groups runs of characters that perform the same grammatical function into tokens.
+ * Turns a list of strings (for example, read from a file) into a stream of characters.
+ * <p>
+ * Between lines, newline characters will be inserted into the stream.
+ * After the last line, no newline is inserted.
+ * <p>
+ * It also facilitates retrieving the location (source name, line number, and column number)
+ * of the most recent character, as well as from a previously marked location.
+ * Before the first character is read, the location is indeterminate.
+ * If the provided list of lines is empty, the location remains indeterminate,
+ * even after calling {@link #nextChar()}.
  *
  * @author Zom-B
  */
@@ -27,11 +36,12 @@ public class CharacterReader {
 	}
 
 	/**
-	 * Returns the next char, or {@code -1} if there are none
+	 * Returns the next char, or {@code -1} if there are none.
 	 */
 	public int nextChar() {
-		if (lineNumber >= lines.length)
+		if (lineNumber >= lines.length) {
 			return -1;
+		}
 
 		column++;
 		if (column > lines[lineNumber].length()) {
@@ -54,23 +64,35 @@ public class CharacterReader {
 	}
 
 	public int getLineNumber() {
+		if (column < 0)
+			throw new IllegalStateException("No character has been read yet.");
+
 		return lineNumber + 1;
 	}
 
 	public int getColumn() {
+		if (column < 0)
+			throw new IllegalStateException("No character has been read yet.");
+
 		return column + 1;
 	}
 
-	public void storeLocation() {
+	public void markLocation() {
 		storedLineNumber = lineNumber;
 		storedColumn = column;
 	}
 
-	public int getStoredLineNumber() {
-		return storedLineNumber;
+	public int getMarkedLineNumber() {
+		if (column < 0)
+			throw new IllegalStateException("No character has been read yet.");
+
+		return storedLineNumber + 1;
 	}
 
-	public int getStoredColumn() {
-		return storedColumn;
+	public int getMarkedColumn() {
+		if (column < 0)
+			throw new IllegalStateException("No character has been read yet.");
+
+		return storedColumn + 1;
 	}
 }
