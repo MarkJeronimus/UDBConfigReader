@@ -216,16 +216,21 @@ public final class ConfigParser {
 			ConfigStruct block = GameConfigurationIO.loadConfigurationFile(fileStack);
 
 			String sectionName = (String)section;
-			if (((String)section).isEmpty()) {
-				destination.putAll(block);
-			} else {
-				@Nullable Object value = block.get(sectionName);
-				if (!(value instanceof ConfigStruct))
-					throw new IllegalArgumentException("Include is missing requested structure, at " +
-					                                   firstToken.getLocationString());
+			if (!sectionName.isEmpty()) {
+				String[] sectionNameParts = sectionName.split("\\.");
 
-				destination.putAll((ConfigStruct)value);
+				for (String sectionNamePart : sectionNameParts) {
+					@Nullable Object value = block.get(sectionNamePart);
+
+					if (!(value instanceof ConfigStruct))
+						throw new IllegalArgumentException("Include is missing requested structure, at " +
+						                                   firstToken.getLocationString());
+
+					block = (ConfigStruct)value;
+				}
 			}
+
+			destination.putAll(block);
 		} catch (IOException ex) {
 			throw new IllegalArgumentException("Unable to read include file: " + filename, ex);
 		} finally {
