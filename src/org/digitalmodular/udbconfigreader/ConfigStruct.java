@@ -6,8 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import static org.digitalmodular.utilities.ValidatorUtilities.requireNonNull;
 import static org.digitalmodular.utilities.ValidatorUtilities.requireStringLengthAtLeast;
 
 /**
@@ -90,6 +92,16 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 
 	public boolean isSorted() {
 		return sorted;
+	}
+
+	@Contract("_, null -> null; _, _ -> !null")
+	public String getString(String key, String fallbackValue) {
+		@Nullable Object value = values.get(requireNonNull(key, "key"));
+
+		if (value == null)
+			return fallbackValue;
+
+		return value.toString();
 	}
 
 	@Override
