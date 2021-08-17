@@ -48,6 +48,11 @@ public final class GameConfigurationIO {
 		if (gameConfiguration != null)
 			return gameConfiguration;
 
+		if (Logger.getGlobal().isLoggable(FINER))
+			Logger.getGlobal().log(INFO, "Loading configuration file: " + file.toAbsolutePath());
+		else
+			Logger.getGlobal().log(INFO, "Loading configuration file: " + file);
+
 		try {
 			List<String>    lines  = Files.readAllLines(file);
 			CharacterReader reader = new CharacterReader(file.getFileName().toString(), lines);
