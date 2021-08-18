@@ -94,6 +94,15 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 		return sorted;
 	}
 
+	public @Nullable ConfigStruct getStruct(String key) {
+		@Nullable Object value = values.get(requireNonNull(key, "key"));
+
+		if (!(value instanceof ConfigStruct))
+			return null;
+
+		return (ConfigStruct)value;
+	}
+
 	@Contract("_, null -> null; _, _ -> !null")
 	public String getString(String key, String fallbackValue) {
 		@Nullable Object value = values.get(requireNonNull(key, "key"));
