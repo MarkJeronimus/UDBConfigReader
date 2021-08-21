@@ -242,7 +242,7 @@ public final class ConfigParser {
 			List<Path> fileStack, ConfigToken firstToken, Iterator<ConfigToken> iter, ConfigStruct destination) {
 		requireHasNextToken(iter, firstToken, "a block");
 
-		ConfigStruct block = new ConfigStruct(firstToken.getText(), destination.isSorted(), 16);
+		ConfigStruct block = new ConfigStruct(firstToken.getText(), 16);
 
 		ConfigToken token;
 		while (true) {

@@ -60,7 +60,7 @@ public final class GameConfigurationIO {
 			List<String>    lines  = Files.readAllLines(file);
 			CharacterReader reader = new CharacterReader(file.getFileName().toString(), lines);
 
-			gameConfiguration = new ConfigStruct(file.toString(), true, 16);
+			gameConfiguration = new ConfigStruct(file.toString(), 16);
 
 			parseConfiguration(fileStack, reader, gameConfiguration);
 

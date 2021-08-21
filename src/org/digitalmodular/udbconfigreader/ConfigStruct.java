@@ -1,6 +1,5 @@
 package org.digitalmodular.udbconfigreader;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,12 +22,10 @@ import static org.digitalmodular.utilities.ValidatorUtilities.requireStringLengt
 public class ConfigStruct implements Iterable<Entry<String, Object>> {
 	private final String              name;
 	private final Map<String, Object> values;
-	private final boolean             sorted;
 
-	public ConfigStruct(String name, boolean sorted, int initialCapacity) {
+	public ConfigStruct(String name, int initialCapacity) {
 		this.name = requireStringLengthAtLeast(1, name, "name");
-		values = sorted ? new LinkedHashMap<>(initialCapacity) : new HashMap<>(initialCapacity);
-		this.sorted = sorted;
+		values = new LinkedHashMap<>(initialCapacity);
 	}
 
 	public String getName() {
@@ -88,10 +85,6 @@ public class ConfigStruct implements Iterable<Entry<String, Object>> {
 	public void putAll(ConfigStruct struct) {
 		for (Entry<String, Object> entry : struct)
 			put(entry.getKey(), entry.getValue());
-	}
-
-	public boolean isSorted() {
-		return sorted;
 	}
 
 	public @Nullable ConfigStruct getStruct(String key) {
